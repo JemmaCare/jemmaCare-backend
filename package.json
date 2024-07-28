@@ -13,7 +13,10 @@
   "description": "",
   "dependencies": {
     "@reis/mongoose-to-json": "^3.0.0",
+    "bcryptjs": "^2.4.3",
     "express": "^4.19.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.1"
   },
   "devDependencies": {

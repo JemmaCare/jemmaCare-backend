@@ -1,11 +1,15 @@
 import express from "express";
 import { dbConnection } from "./config/db.js";
+import { userRouter } from "./routes/user_routes.js";
 
 // create express app
 const app = express();
 
 // use middlewares
 app.use(express.json());
+
+
+app.use(userRouter);
 
 // call database
 dbConnection ();
