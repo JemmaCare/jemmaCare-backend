@@ -51,7 +51,7 @@ export const login = async (req, res, next) => {
 
         // Find a user using their unique identifier
         const user = await UserModel.findOne({
-            $or: [{ email: email }, { username: username }]
+            $or: [{ email: email }, { username: username }, { password: password }]
         });
 
         if (!user) {
@@ -67,7 +67,7 @@ export const login = async (req, res, next) => {
             const token = jwt.sign(
                 { id: user.id },
                 process.env.JWT_PRIVATE_KEY,
-                { expiresIn: '72' }
+                { expiresIn: '72h' }
             );
             return res.status(200).json({
                 message: 'User logged in successfully',
@@ -81,6 +81,21 @@ export const login = async (req, res, next) => {
 };
 
 
+// User profile
+export const getProfile = async (req, res, next) => {
+    try {
+        // get user id from request(token)
+        const id = req.user.id
+        // find user by id
+        const user = await UserModel.findById(id)
+            .select({ password: false });
+        res.status(200).json(user)
+    } catch (error) {
+        next(error)
+    }
+}
+
+
 //User logout 
 export const logout = async (req, res, next) => {
     try {
@@ -92,3 +107,27 @@ export const logout = async (req, res, next) => {
         next(error)
     }
 }
+
+
+
+// Admin creating a user
+export const addUser = async (req, res, next) => {
+    try {
+        // Validate request
+        const { value, error } = userValidator.validate(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
+        // Encrypt user password
+        const hashedPassword = bcryptjs.hashSync(value.password, 12);
+        value.password = hashedPassword
+        // Create new user with hashed password
+        const createUser = await UserModel.create(value)
+         
+        // Return response
+        res.status(201).json({ message: 'User Created', user: createUser });
+    } catch (error) {
+        next(error);
+    }
+};

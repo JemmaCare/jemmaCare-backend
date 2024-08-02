@@ -7,7 +7,7 @@ const userSchema = new Schema({
     username: { type: String, lowercase: true, unique: true },
     email: { type: String, unique: true },
     password: { type: String },
-    role: { type: String, enum: ['patient', 'therapist'], required: true },
+    role: { type: String, enum: ['patient', 'therapist', 'admin'], default: 'patient' },
     termsAndConditions: { type: Boolean },
 }, {
     timestamps: true
