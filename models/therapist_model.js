@@ -1,7 +1,7 @@
 import { Schema, model,Types } from "mongoose";
 import { toJSON } from "@reis/mongoose-to-json";
 import { getNames } from "country-list";
-import { required } from "joi";
+
 
  export const countryNames = getNames();
 

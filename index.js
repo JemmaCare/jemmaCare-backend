@@ -2,8 +2,11 @@ import express from "express";
 import { dbConnection } from "./config/db.js";
 import { userRouter } from "./routes/user_routes.js";
 import cors from "cors";
-import expressOasGenerator from "@mickeymond/express-oas-generator"
+import expressOasGenerator from "@mickeymond/express-oas-generator";
 import mongoose from "mongoose";
+import { articleRouter } from "./routes/article_routes.js";
+import { patientResponseRouter } from "./routes/patient_routes.js";
+import { therapistProfileRouter } from "./routes/therapist_routes.js";
 
 // create express app
 const app = express();
@@ -15,6 +18,9 @@ app.use(express.json());
 
 // use routes
 app.use('/api/v1', userRouter);
+app.use('/api/v1', articleRouter);
+app.use('/api/v1', patientResponseRouter);
+app.use('/api/v1', therapistProfileRouter);
 
 
 // handle responses

@@ -41,10 +41,7 @@ export const patientResponseValidator= Joi.object({
 })
 
 
-export const articleValidator = Joi.object({
-    title: Joi.string().required(),
-    content: Joi.string().required(),
-})
+
 
 
 export const appointmentValidator = Joi.object({
