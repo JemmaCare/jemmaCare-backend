@@ -1,6 +1,7 @@
 import express from "express";
 import { dbConnection } from "./config/db.js";
 import { userRouter } from "./routes/user_routes.js";
+import errorHandler from "errorhandler";
 import cors from "cors";
 import expressOasGenerator from "@mickeymond/express-oas-generator";
 import mongoose from "mongoose";
@@ -14,6 +15,7 @@ const app = express();
 // use middlewares
 app.use(cors())
 app.use(express.json());
+app.use (errorHandler({log: false}));
 
 
 // use routes

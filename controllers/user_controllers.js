@@ -1,7 +1,7 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { UserModel } from "../models/user_model.js";
-import { userValidator } from "../validators/all_validators.js";
+import { userValidator } from "../validators/all_userValidators.js";
 
 
 
@@ -47,11 +47,15 @@ export const signup = async (req, res, next) => {
 // User login
 export const login = async (req, res, next) => {
     try {
-        const { email, username, password } = req.body;
-
+        // Validate request
+        const { value, error } = loginValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
+        }
+        
         // Find a user using their unique identifier
         const user = await UserModel.findOne({
-            $or: [{ email: email }, { username: username }, { password: password }]
+            $or: [{ email: value.email }, { username: value.username }, { password: password }]
         });
 
         if (!user) {
@@ -108,6 +112,84 @@ export const logout = async (req, res, next) => {
     }
 }
 
+export const forgotPassword = async (req, res, next) => {
+    try {
+        // Validate request
+        const { value, error } = forgotPasswordValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
+        }
+        // Find a user with provided email
+        const user = await UserModel.findOne({ email: value.email });
+        if (!user) {
+            return res.status(404).json('User Not Found');
+        }
+        // Generate reset token
+        const resetToken = await ResetTokenModel.create({ userId: user.id });
+        // Send reset email
+        await mailTransport.sendMail({
+            to: value.email,
+            subject: 'Reset Your Password',
+            html: `
+            <h1>Hello ${user.name}</h1>
+            <h1>Please follow the link below to reset your password.</h1>
+            <a href="${process.env.FRONTEND_URL}/reset-password/${resetToken.id}">Click Here</a>
+            `
+        });
+        // Return response
+        res.status(200).json('Password Reset Mail Sent!');
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const verifyResetToken = async (req, res, next) => {
+    try {
+        // Find Reset Token by id
+        const resetToken = await ResetTokenModel.findById(req.params.id);
+        if (!resetToken) {
+            return res.status(404).json('Reset Token Not Found');
+        }
+        // Check if token is valid
+        if (resetToken.expired || (Date.now() >= new Date(resetToken.expiresAt).valueOf())) {
+            return res.status(409).json('Invalid Reset Token');
+        }
+        // Return response
+        res.status(200).json('Reset Token is Valid!');
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const resetPassword = async (req, res, next) => {
+    try {
+        // Validate request
+        const { value, error } = resetPasswordValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
+        }
+        // Find Reset Token by id
+        const resetToken = await ResetTokenModel.findById(value.resetToken);
+        if (!resetToken) {
+            return res.status(404).json('Reset Token Not Found');
+        }
+        // Check if token is valid
+        if (resetToken.expired || (Date.now() >= new Date(resetToken.expiresAt).valueOf())) {
+            return res.status(409).json('Invalid Reset Token');
+        }
+        // Encrypt user password
+        const hashedPassword = bcrypt.hashSync(value.password, 10);
+        // Update user password
+        await UserModel.findByIdAndUpdate(resetToken.userId, { password: hashedPassword });
+        // Expire reset token
+        await ResetTokenModel.findByIdAndUpdate(value.resetToken, { expired: true });
+        // Return response
+        res.status(200).json('Password Reset Successful!');
+    } catch (error) {
+        next(error);
+    }
+}
 
 
 // Admin creating a user
@@ -131,3 +213,54 @@ export const addUser = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getUsers = async (req, res, next) => {
+    try {
+        // Get all users
+        const users = await UserModel
+            .find()
+            .select({ password: false });
+        // Return response
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const updateUser = async (req, res, next) => {
+    try {
+        // Validate request
+        const { value, error } = updateUserValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
+        }
+        // Update user
+        await UserModel.findByIdAndUpdate(
+            req.params.id,
+            value,
+            { new: true }
+        );
+        // Return response
+        res.status(200).json('User Updated');
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const deleteUser = async (req, res, next) => {
+    try {
+        // Get user id from session or request
+        const id = req.session?.user?.id || req?.user?.id;
+        // Ensure user is not deleting themselves
+        if (id === req.params.id) {
+            return res.status(409).json('Cannot Delete Self');
+        }
+        // Delete user
+        await UserModel.findByIdAndDelete(req.params.id);
+        // Return response
+        res.status(200).json('User Deleted');
+    } catch (error) {
+        next(error);
+    }
+}

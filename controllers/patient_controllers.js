@@ -1,6 +1,6 @@
 import { PatientResponseModel } from "../models/patient_model.js";
 import { UserModel } from "../models/user_model.js";
-import { patientResponseValidator } from "../validators/all_validators.js";
+import { patientResponseValidator } from "../validators/patient_validator.js";
 
 
 // Create a patient response

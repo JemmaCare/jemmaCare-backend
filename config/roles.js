@@ -8,6 +8,7 @@ export const roles = [
             'create_user',
             'delete_user',
             'update_user',
+            'read_users',
             'update_profile',
             'delete_profile',
             'get_response',

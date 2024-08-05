@@ -1,5 +1,5 @@
 import { TherapistProfileModel } from "../models/therapist_model.js";
-import { therapistProfileValidator } from "../validators/all_validators.js";
+import { therapistProfileValidator } from "../validators/therapist_validator.js";
 import { UserModel } from "../models/user_model.js";
 
 
