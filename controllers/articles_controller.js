@@ -3,19 +3,29 @@ import { ArticleModel } from "../models/article_model.js";
 
 
 
-// Upload an article
+// // Upload an article
 export const uploadArticle = async (req, res, next) => {
     try {
         // Find if user is authenticated to upload an article
-        const userId = req.user.userId;
+        const userId = req.user.id; 
         const user = await UserModel.findById(userId);
         if (!user) {
             return res.status(404).send("User not found");
         }
 
+        // Extract article data from request body
+        const { title, contentLink, source } = req.body; 
+
+        // Check if required fields are present
+        if (!title || !contentLink) {
+            return res.status(400).json({ message: 'title and contentlink are required' });
+        }
+
         // Upload article
         const article = new ArticleModel({
-            ...value,
+            title,
+            contentLink,
+            source,
             uploadedBy: userId,
         });
         await article.save();
@@ -25,6 +35,7 @@ export const uploadArticle = async (req, res, next) => {
         next(error);
     }
 };
+
 
 
 // get all articles

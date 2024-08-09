@@ -11,11 +11,14 @@ export const userValidator= Joi.object({
 
 })
 
+
+
 export const loginValidator = Joi.object({
     username: Joi.string(),
     email: Joi.string().email(),
-    password: Joi.string().required(),
-});
+    password:Joi.string().min(6).required(),
+}).xor('username', 'email');
+
 
 export const forgotPasswordValidator = Joi.object({
     email: Joi.string().email().required(),
@@ -32,12 +35,12 @@ export const createUserValidator = Joi.object({
     username: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    role: Joi.string().required().valid('admin', 'manager'),
+    role: Joi.string().required().valid('admin', 'therapist'),
 });
 
 export const updateUserValidator = Joi.object({
     name: Joi.string(),
-    role: Joi.string().valid('admin', 'manager'),
+    role: Joi.string().valid('admin', 'therapist'),
 });
 
 

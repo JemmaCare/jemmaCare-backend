@@ -1,12 +1,44 @@
 import { TherapistProfileModel } from "../models/therapist_model.js";
 import { therapistProfileValidator } from "../validators/therapist_validator.js";
 import { UserModel } from "../models/user_model.js";
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+
+// therapist login function when admin signs up for him
+export const loginTherapist = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Find therapist user
+        const therapist = await UserModel.findOne({ username, role: 'therapist' });
+
+        if (therapist && await bcryptjs.compare(password, therapist.password)) {
+            // Generate JWT token
+            const token = jwt.sign({ id: therapist._id, role: therapist.role }, process.env.JWT_PRIVATE_KEY, { expiresIn: '1h' });
+
+            // Send token to the client
+           
+            return res.status(200).json({
+                message: 'Therapist logged in successfully',
+                accessToken: token
+            });
+        } else {
+            res.status(401).json({ message: 'Invalid credentials' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error logging in', error: error.message});
+    }
+};
 
 
 // Create a therapist profile
 export const createProfile = async (req, res, next) => {
     try {
-        const { error, value } = therapistProfileValidator.validate(req.body);
+        const { error, value } = therapistProfileValidator.validate({
+            ...req.body,
+            profilePicture: req.file.filename,
+          });
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }

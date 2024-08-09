@@ -1,12 +1,33 @@
 import { PatientResponseModel } from "../models/patient_model.js";
 import { UserModel } from "../models/user_model.js";
 import { patientResponseValidator } from "../validators/patient_validator.js";
+import { TherapistProfileModel } from "../models/therapist_model.js"; 
+
+
+// Matching algorithm
+const matchTherapists = async (patientResponse) => {
+    try {
+        // Find therapists with matching expertise
+        const matchingTherapists = await TherapistProfileModel.find({
+            expertise: { $in: [patientResponse.therapyType] }
+        })
+        .populate({
+            path: 'userId',       
+            select: 'firstName lastName email'  
+        })
+        .limit(6);
+
+        return matchingTherapists;
+    } catch (error) {
+        throw new Error('Error matching therapists: ' + error.message);
+    }
+};
 
 
 // Create a patient response
 export const createResponse = async (req, res) => {
     try {
-        const { error, value } = userValidator.validate(req.body);
+        const { error, value } = patientResponseValidator.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
@@ -17,21 +38,30 @@ export const createResponse = async (req, res) => {
             return res.status(404).json({ message: "Patient not found" });
         }
 
-        const response = await PatientResponseModel.create({
+        const patientResponse = await PatientResponseModel.create({
             ...value,
             userId: req.user.id, 
         });
-        await response.save();
-        res.status(201).send('Patient responbbse created successfully');
+        await patientResponse.save();
+
+// Match therapists
+const matchedTherapists = await matchTherapists(patientResponse);
+
+res.status(201).json({
+    message: 'Patient response created successfully',
+    response: patientResponse,
+    matchedTherapists
+});
+       
     } catch (error) {
-       next
+       next(error)
     }
 };
 
 // Get all patient responses
 export const getResponses = async (req, res, next) => {
     try {
-        const responses = await PatientResponseModel.find().populate('userId', 'firstName lastName ');
+        const responses = await PatientResponseModel.find().populate('userId', 'firstName lastName ').populate('firstName lastName');;
         res.status(200).json(responses);
     } catch (error) {
         next(error);

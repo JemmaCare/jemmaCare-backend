@@ -14,6 +14,7 @@ const userSchema = new Schema({
     timestamps: true
 });
 
+
 // Apply plugins
 userSchema.plugin(toJSON);
 userSchema.plugin(mongooseErrors)

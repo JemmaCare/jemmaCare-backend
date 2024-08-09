@@ -3,19 +3,20 @@ import { toJSON } from "@reis/mongoose-to-json";
 import { getNames } from "country-list";
 
 
+
  export const countryNames = getNames();
 
 
 const therapistProfileSchema = new Schema ({
-    profilePicture: {type: String, required: true},
-    expertise: {type:[String], required: true},
+    profilePicture: {type: String},
+    expertise: {type:[String],enum:["Bipolar", "Depression", "Psychosis", "Personality disorders", "Schizophrenia", "Body Dysmorphic Disorder", "Obsessive Compulsive Disorder", "Postpartum Depression"], required: true},
     overview: {type: String, required:true},
     nationality: { type: String, enum: countryNames, required: true },
     phone: { type: String },
     address: { type: String },
     gender: {type:String, enum: ["male", "female"]},
     experienceYears:{type:Number,required:true},
-    user: { type: Types.ObjectId, ref:'User', select:false}
+    userId: { type: Types.ObjectId, ref:'User', select:true}
 },{
    timestamps:true 
 });

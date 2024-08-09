@@ -1,7 +1,9 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { UserModel } from "../models/user_model.js";
-import { userValidator } from "../validators/all_userValidators.js";
+import { ResetTokenModel, UserModel } from "../models/user_model.js";
+import { forgotPasswordValidator, loginValidator, updateUserValidator, userValidator } from "../validators/all_userValidators.js";
+import { mailTransport } from '../config/mail.js'; 
+
 
 
 
@@ -27,16 +29,9 @@ export const signup = async (req, res, next) => {
             //create user
             const addUser = await UserModel.create(value)
 
-            // Generate a token
-            const token = jwt.sign(
-                { id: addUser.id },
-                process.env.JWT_PRIVATE_KEY,
-                { expiresIn: '72h' }
-            );
-
+           
             return res.status(201).json({
                 message: 'User created successfully',
-                accessToken: token
             });
         }
     } catch (error) {
@@ -53,9 +48,11 @@ export const login = async (req, res, next) => {
             return res.status(422).json(error);
         }
         
-        // Find a user using their unique identifier
+        const { username, email, password } = value; // Extract username, email, and password
+
+        // Find a user using their unique identifier (username or email)
         const user = await UserModel.findOne({
-            $or: [{ email: value.email }, { username: value.username }, { password: password }]
+            $or: [{ email: email }, { username: username }]
         });
 
         if (!user) {
@@ -80,7 +77,7 @@ export const login = async (req, res, next) => {
         }
     } catch (error) {
         console.error(error);
-        next(error)
+        next(error);
     }
 };
 
@@ -131,7 +128,7 @@ export const forgotPassword = async (req, res, next) => {
             to: value.email,
             subject: 'Reset Your Password',
             html: `
-            <h1>Hello ${user.name}</h1>
+            <h1>Hello ${user.firstName || 'User'}</h1>
             <h1>Please follow the link below to reset your password.</h1>
             <a href="${process.env.FRONTEND_URL}/reset-password/${resetToken.id}">Click Here</a>
             `
@@ -179,7 +176,7 @@ export const resetPassword = async (req, res, next) => {
             return res.status(409).json('Invalid Reset Token');
         }
         // Encrypt user password
-        const hashedPassword = bcrypt.hashSync(value.password, 10);
+        const hashedPassword = bcryptjs.hashSync(value.password, 10);
         // Update user password
         await UserModel.findByIdAndUpdate(resetToken.userId, { password: hashedPassword });
         // Expire reset token
@@ -189,31 +186,40 @@ export const resetPassword = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
+} 
 
 
-// Admin creating a user
+// Admin creating a user(therapist)
 export const addUser = async (req, res, next) => {
     try {
         // Validate request
         const { value, error } = userValidator.validate(req.body);
         if (error) {
-            return res.status(400).json({ message: error.details[0].message });
+            return res.status(422).json(error);
         }
-
         // Encrypt user password
-        const hashedPassword = bcryptjs.hashSync(value.password, 12);
-        value.password = hashedPassword
-        // Create new user with hashed password
-        const createUser = await UserModel.create(value)
-         
+        const hashedPassword = bcryptjs.hashSync(value.password, 10);
+        // Create user
+        await UserModel.create({
+            ...value,
+            password: hashedPassword
+        });
+        // Send email to user
+        await mailTransport.sendMail({
+            to: value.email,
+            subject: "User Account Created!",
+            text: `Dear user,\n\nA user account has been created for you with the following credentials.\n\nUsername: ${value.username}\nEmail: ${value.email}\nPassword: ${value.password}\nRole: ${value.role}\n\nThank you!`,
+        });
         // Return response
-        res.status(201).json({ message: 'User Created', user: createUser });
+        res.status(201).json('User Created successfully');
     } catch (error) {
         next(error);
     }
-};
+}
 
+
+   
+// get all therapists
 export const getUsers = async (req, res, next) => {
     try {
         // Get all users

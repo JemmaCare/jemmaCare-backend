@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addUser, deleteUser, getProfile, getUsers, login, logout, resetPassword, signup, updateUser, verifyResetToken } from "../controllers/user_controllers.js";
+import { addUser, deleteUser, forgotPassword, getProfile, getUsers, login, logout, resetPassword, signup, updateUser, verifyResetToken } from "../controllers/user_controllers.js";
 import { hasPermission, isAuthenticated } from "../middlewares/auth.js";
 
 
@@ -14,7 +14,9 @@ userRouter.get ("/users/auth/profile", isAuthenticated, getProfile)
 
 userRouter.post ("/users/auth/logout",isAuthenticated, logout)
 
-userRouter.post("/users/reset-token/:id", verifyResetToken)
+userRouter.post ("/users/forgot-password", forgotPassword)
+
+userRouter.get("/users/reset-token/:id", verifyResetToken)
 
 userRouter.post("/users/reset-password", resetPassword)
 

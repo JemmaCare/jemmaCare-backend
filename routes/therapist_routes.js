@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { createProfile, deleteProfile, getProfileById, getProfiles, updateProfile } from "../controllers/therapist_controllers.js";
+import { createProfile, deleteProfile, getProfileById, getProfiles, loginTherapist, updateProfile } from "../controllers/therapist_controllers.js";
 import { hasPermission, isAuthenticated } from "../middlewares/auth.js";
+import { remoteUpload } from "../middlewares/uploads.js";
 
 export const therapistProfileRouter = Router();
 
+therapistProfileRouter.post('/users/therapistprofiles/login', loginTherapist);
 
-therapistProfileRouter.post('/users/therapistprofiles', isAuthenticated, hasPermission('create_therapistProfile'), createProfile);
+therapistProfileRouter.post('/users/therapistprofiles', isAuthenticated, hasPermission('create_therapistProfile'),  remoteUpload.single('profilePicture'), createProfile);
 
 therapistProfileRouter.get('/users/therapistprofiles', hasPermission('get_therapistProfile'), getProfiles);
 
