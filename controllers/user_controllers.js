@@ -28,8 +28,6 @@ export const signup = async (req, res, next) => {
             value.password = hashedPassword
             //create user
             const addUser = await UserModel.create(value)
-
-           
             return res.status(201).json({
                 message: 'User created successfully',
             });

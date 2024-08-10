@@ -1,6 +1,6 @@
 import { PatientResponseModel } from "../models/patient_model.js";
 import { UserModel } from "../models/user_model.js";
-import { patientResponseValidator } from "../validators/patient_validator.js";
+import { patientResponseValidator, patientUpdateResponseValidator } from "../validators/patient_validator.js";
 import { TherapistProfileModel } from "../models/therapist_model.js"; 
 
 
@@ -61,7 +61,7 @@ res.status(201).json({
 // Get all patient responses
 export const getResponses = async (req, res, next) => {
     try {
-        const responses = await PatientResponseModel.find().populate('userId', 'firstName lastName ').populate('firstName lastName');;
+        const responses = await PatientResponseModel.find().populate('userId', 'firstName lastName email')
         res.status(200).json(responses);
     } catch (error) {
         next(error);
@@ -85,7 +85,7 @@ export const getResponseById = async (req, res, next) => {
 // Update a patient response
 export const updateResponse = async (req, res, next) => {
     try {
-        const { error, value } = patientResponseValidator.validate(req.body);
+        const { error, value } = patientUpdateResponseValidator.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }

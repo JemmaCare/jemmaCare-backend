@@ -1,5 +1,5 @@
 import { TherapistProfileModel } from "../models/therapist_model.js";
-import { therapistProfileValidator } from "../validators/therapist_validator.js";
+import { therapistProfileValidator, therapistUpdateProfileValidator } from "../validators/therapist_validator.js";
 import { UserModel } from "../models/user_model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -88,7 +88,7 @@ export const getProfileById = async (req, res, next) => {
 // Update a therapist profile
 export const updateProfile = async (req, res, next) => {
     try {
-        const { error, value } = therapistProfileValidator.validate(req.body);
+        const { error, value } = therapistUpdateProfileValidator.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
