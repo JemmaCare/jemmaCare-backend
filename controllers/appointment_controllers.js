@@ -14,21 +14,22 @@ export const createAppointment = async (req, res) => {
             return res.status(400).json({ message: error.details[0].message });
         }
 
+        // Fetching patient and therapist details
+        const patient = await UserModel.findById(req.user.id);
+        const therapist = await UserModel.findById(value.therapistId);
+
+        if (!patient || !therapist) {
+            return res.status(404).json({ message: 'Patient or Therapist not found' });
+        }
+
         // Create a new appointment using the validated data
         const appointment = await AppointmentModel.create({
             userId: req.user.id,
             ...value
         });
 
-        // Fetching patient and therapist details
-        const patient = await UserModel.findById(req.user.id);
-        const therapist = await UserModel.findById(value.therapistId);
 
-     
 
-        if (!patient || !therapist) {
-            return res.status(404).json({ message: 'Patient or Therapist not found' });
-        }
 
         // Send confirmation email to the patient
         await mailTransport.sendMail({

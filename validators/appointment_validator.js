@@ -4,6 +4,7 @@ import Joi from "joi";
 
 
 export const appointmentValidator = Joi.object({
+    therapistId: Joi.string().required(),
     appointmentDate: Joi.date().required(),
     appointmentTime: Joi.string().required(),
     status: Joi.string().valid("pending", "confirmed", "cancelled"),
