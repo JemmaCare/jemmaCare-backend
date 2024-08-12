@@ -10,7 +10,7 @@ export const requireAdmin = async (req, res, next) => {
         try {
             // Extract token from headers
             const token = authHeader.split(' ')[1];
-            
+
             // Verify the token
             req.user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 
@@ -19,7 +19,7 @@ export const requireAdmin = async (req, res, next) => {
             if (!user) {
                 return res.status(401).json('User Does Not Exist!');
             }
-            
+
             // Check if the user has an admin role
             if (user.role !== 'admin') {
                 return res.status(403).json('Access Forbidden: Admins only!');

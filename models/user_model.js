@@ -3,8 +3,8 @@ import { toJSON } from "@reis/mongoose-to-json";
 import mongooseErrors from "mongoose-errors";
 
 const userSchema = new Schema({
-    firstName: { type: String, required:true},
-    lastName: { type: String, required:true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     username: { type: String, lowercase: true, unique: true },
     email: { type: String, unique: true },
     password: { type: String },

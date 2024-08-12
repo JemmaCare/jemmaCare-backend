@@ -28,29 +28,6 @@ export const isAuthenticated = async (req, res, next) => {
 
 
 
-// export const isAuthenticated = async (req, res, next) => {
-//     if (req.headers.authorization) {
-//         try {
-//             // Extract token from headers
-//             const token = req.headers.authorization.split(' ')[1];
-//             // Verify token and decode payload
-//             const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-
-//             // Find user in the database
-//             const user = await UserModel.findById(decoded.id); // Ensure `id` matches token payload
-//             if (!user) {
-//                 return res.status(401).json('User Does Not Exist!');
-//             }
-
-//             req.user = user; // Attach full user object
-//             next();
-//         } catch (error) {
-//             return res.status(401).json(error.message);
-//         }
-//     } else {
-//         return res.status(401).json('Not Authenticated!');
-//     }
-// };
 
 // Authorization
 export const hasPermission = (permission) => {

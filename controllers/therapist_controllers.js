@@ -18,7 +18,7 @@ export const loginTherapist = async (req, res) => {
             const token = jwt.sign({ id: therapist._id, role: therapist.role }, process.env.JWT_PRIVATE_KEY, { expiresIn: '1h' });
 
             // Send token to the client
-           
+
             return res.status(200).json({
                 message: 'Therapist logged in successfully',
                 accessToken: token
@@ -27,18 +27,17 @@ export const loginTherapist = async (req, res) => {
             res.status(401).json({ message: 'Invalid credentials' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Error logging in', error: error.message});
+        res.status(500).json({ message: 'Error logging in', error: error.message });
     }
 };
 
-
 // Create a therapist profile
-export const createProfile = async (req, res, next) => {
+export const createProfile = async (req, res) => {
     try {
         const { error, value } = therapistProfileValidator.validate({
             ...req.body,
             profilePicture: req.file.filename,
-          });
+        });
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
@@ -53,40 +52,65 @@ export const createProfile = async (req, res, next) => {
         // Create and save therapist profile
         const profile = await TherapistProfileModel.create({
             ...value,
-            userId, 
+            userId,
         });
 
         res.status(201).json({ message: 'Therapist profile created successfully', profile });
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
-// Get all therapist profiles
-export const getProfiles = async (req, res, next) => {
+// Get all therapist profiles with search and filter
+export const getProfiles = async (req, res) => {
     try {
-        const profiles = await TherapistProfileModel.find().populate('userId', 'firstName lastName email');
+        // Extract query parameters
+        const { expertise, gender, nationality, availability } = req.query;
+
+        // Build the query object
+        let query = {};
+
+        if (expertise) {
+            query.expertise = { $in: [expertise] };
+        }
+        if (gender) {
+            query.gender = gender;
+        }
+        if (nationality) {
+            query.nationality = nationality;
+        }
+        if (availability) {
+            query.availability = availability;
+        }
+
+        // Find therapists matching the query
+        const profiles = await TherapistProfileModel.find(query)
+            .populate({
+                path: 'userId',
+                select: 'firstName lastName email'
+            });
+
         res.status(200).json(profiles);
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
 // Get a single therapist profile by ID
-export const getProfileById = async (req, res, next) => {
+export const getProfileById = async (req, res) => {
     try {
         const profile = await TherapistProfileModel.findById(req.params.id).populate('userId', 'firstName lastName email');
         if (!profile) {
             return res.status(404).json({ message: 'Profile not found' });
         }
         res.status(200).json(profile);
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
 // Update a therapist profile
-export const updateProfile = async (req, res, next) => {
+export const updateProfile = async (req, res) => {
     try {
         const { error, value } = therapistUpdateProfileValidator.validate(req.body);
         if (error) {
@@ -98,20 +122,21 @@ export const updateProfile = async (req, res, next) => {
             return res.status(404).json({ message: 'Therapist profile not found' });
         }
         res.status(200).json(profile);
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
 // Delete a therapist profile
-export const deleteProfile = async (req, res, next) => {
+export const deleteProfile = async (req, res) => {
     try {
         const profile = await TherapistProfileModel.findByIdAndDelete(req.params.id);
         if (!profile) {
             return res.status(404).json({ message: 'Therapist profile not found' });
         }
         res.status(200).json({ message: 'Therapist profile deleted successfully', profile });
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
+

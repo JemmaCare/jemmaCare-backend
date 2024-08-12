@@ -7,9 +7,9 @@ export const therapistProfileRouter = Router();
 
 therapistProfileRouter.post('/users/therapistprofiles/login', loginTherapist);
 
-therapistProfileRouter.post('/users/therapistprofiles', isAuthenticated, hasPermission('create_therapistProfile'),  remoteUpload.single('profilePicture'), createProfile);
+therapistProfileRouter.post('/users/therapistprofiles', isAuthenticated, hasPermission('create_therapistProfile'), remoteUpload.single('profilePicture'), createProfile);
 
-therapistProfileRouter.get('/users/therapistprofiles', hasPermission('get_therapistProfile'), getProfiles);
+therapistProfileRouter.get('/users/therapistprofiles', isAuthenticated, hasPermission('get_therapistProfile'), getProfiles);
 
 therapistProfileRouter.get('/users/therapistprofiles/:id', getProfileById);
 

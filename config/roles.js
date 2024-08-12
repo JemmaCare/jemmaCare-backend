@@ -23,7 +23,10 @@ export const roles = [
             'get_therapistProfile',
             'create_patientResponse',
             'update_patientResponse',
-            'delete_patientResponse'
+            'delete_patientResponse',
+            'create_appointment',
+            'update_appointment',
+            'delete_appointment',
         ]
     },
 
@@ -36,7 +39,8 @@ export const roles = [
             'get_patientResponses',
             'create_therapistProfile',
             'update_therapistProfile',
-            'delete_therapistProfile'
+            'delete_therapistProfile',
+            'get_appointments',
         ]
     }
 ]

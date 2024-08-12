@@ -2,7 +2,7 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ResetTokenModel, UserModel } from "../models/user_model.js";
 import { forgotPasswordValidator, loginValidator, updateUserValidator, userValidator } from "../validators/all_userValidators.js";
-import { mailTransport } from '../config/mail.js'; 
+import { mailTransport } from '../config/mail.js';
 
 
 
@@ -45,7 +45,7 @@ export const login = async (req, res, next) => {
         if (error) {
             return res.status(422).json(error);
         }
-        
+
         const { username, email, password } = value; // Extract username, email, and password
 
         // Find a user using their unique identifier (username or email)
@@ -184,7 +184,7 @@ export const resetPassword = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-} 
+}
 
 
 // Admin creating a user(therapist)
@@ -216,7 +216,7 @@ export const addUser = async (req, res, next) => {
 }
 
 
-   
+
 // get all therapists
 export const getUsers = async (req, res, next) => {
     try {

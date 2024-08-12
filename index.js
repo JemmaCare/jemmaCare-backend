@@ -9,16 +9,21 @@ import { articleRouter } from "./routes/article_routes.js";
 import { patientResponseRouter } from "./routes/patient_routes.js";
 import { therapistProfileRouter } from "./routes/therapist_routes.js";
 import { adminRouter } from "./routes/admin_routes.js";
+import { appointmentRouter } from "./routes/appointment_routes.js";
 
 
 
 // create express app
 const app = express();
 
+
+
 // use middlewares
 app.use(cors())
 app.use(express.json());
-app.use (errorHandler({log: false}));
+app.use(errorHandler({ log: false }));
+
+
 
 // Custom middleware to format errors as JSON
 app.use((err, req, res, next) => {
@@ -33,28 +38,34 @@ app.use((err, req, res, next) => {
 });
 
 
+
 // use routes
 app.use('/api/v1', userRouter);
 app.use('/api/v1', articleRouter);
 app.use('/api/v1', patientResponseRouter);
 app.use('/api/v1', therapistProfileRouter);
 app.use('/api/v1', adminRouter);
+app.use('/api/v1', appointmentRouter)
+
 
 
 // handle responses
 expressOasGenerator.handleResponses(app, {
     alwaysServeDocs: true,
-    tags: ['auth', 'therapistProfile','patientResponse' , 'articles', 'appointment', 'admin'],
+    tags: ['auth', 'therapistProfile', 'patientResponse', 'articles', 'appointment', 'admin'],
     mongooseModels: mongoose.modelNames(),
 });
+
 
 // handle requests
 expressOasGenerator.handleRequests();
 app.use((req, res) => res.redirect('/api-docs/'));
 
 
+
 // connect to database
 dbConnection();
+
 
 // connect server
 const port = 3000

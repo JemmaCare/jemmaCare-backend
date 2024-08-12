@@ -16,8 +16,8 @@ export const signup = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: 'admin',  
-      termsAndConditions: true  
+      role: 'admin',
+      termsAndConditions: true
     });
 
     await newAdmin.save();
@@ -29,24 +29,24 @@ export const signup = async (req, res) => {
 
 
 export const login = async (req, res) => {
-    try {
-        const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-        // Find admin user
-        const admin = await UserModel.findOne({ username, role: 'admin' });
+    // Find admin user
+    const admin = await UserModel.findOne({ username, role: 'admin' });
 
-        if (admin && await bcryptjs.compare(password, admin.password)) {
-            // Generate JWT token
-            const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_PRIVATE_KEY, { expiresIn: '1h' });
+    if (admin && await bcryptjs.compare(password, admin.password)) {
+      // Generate JWT token
+      const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_PRIVATE_KEY, { expiresIn: '1h' });
 
-            return res.status(200).json({
-              message: 'Admin logged in successfully',
-              accessToken: token
-          });
-        } else {
-            res.status(401).json({ message: 'Invalid credentials' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Error logging in', error });
+      return res.status(200).json({
+        message: 'Admin logged in successfully',
+        accessToken: token
+      });
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' });
     }
+  } catch (error) {
+    res.status(500).json({ message: 'Error logging in', error });
+  }
 };

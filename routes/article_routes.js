@@ -3,7 +3,7 @@ import { hasPermission, isAuthenticated } from "../middlewares/auth.js";
 import { deleteArticle, getAllArticles, getArticleById, uploadArticle } from "../controllers/articles_controller.js";
 
 
-export const articleRouter = Router ();
+export const articleRouter = Router();
 
 
 articleRouter.post('/users/articles', isAuthenticated, hasPermission('upload_article'), uploadArticle);
