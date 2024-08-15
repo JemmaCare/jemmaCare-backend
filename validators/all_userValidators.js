@@ -5,7 +5,7 @@ export const userValidator = Joi.object({
     lastName: Joi.string().required(),
     username: Joi.string().required(),
     email: Joi.string().email().required(),
-    password: Joi.string().min(6).required(),
+    password: Joi.string().min(8).required(),
     role: Joi.string().valid('patient', 'therapist', 'admin').default('patient'),
     termsAndConditions: Joi.boolean().required()
 
@@ -16,7 +16,7 @@ export const userValidator = Joi.object({
 export const loginValidator = Joi.object({
     username: Joi.string(),
     email: Joi.string().email(),
-    password: Joi.string().min(6).required(),
+    password: Joi.string().min(8).required(),
 }).xor('username', 'email');
 
 
