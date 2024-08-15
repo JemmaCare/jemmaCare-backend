@@ -9,11 +9,10 @@ export const countryNames = getNames();
 
 const therapistProfileSchema = new Schema({
     profilePicture: { type: String },
-    expertise: { type: [String], enum: ["Bipolar", "Depression", "Psychosis", "Personality disorders", "Schizophrenia", "Body Dysmorphic Disorder", "Obsessive Compulsive Disorder", "Postpartum Depression"], required: true },
+    expertise: { type: [String], enum: ["Bipolar", "Depression", "Psychosis","Anxiety", "Personality disorders", "Schizophrenia", "Body Dysmorphic Disorder", "Obsessive Compulsive Disorder", "Postpartum Depression"], required: true },
     overview: { type: String, required: true },
     nationality: { type: String, enum: countryNames, required: true },
     phone: { type: String },
-    languages: { type: [String], required: true },
     address: { type: String },
     gender: { type: String, enum: ["male", "female"] },
     experienceYears: { type: Number, required: true },

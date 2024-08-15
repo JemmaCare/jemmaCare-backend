@@ -79,10 +79,7 @@ export const getProfiles = async (req, res) => {
         if (nationality) {
             query.nationality = nationality;
         }
-        if (availability) {
-            query.availability = availability;
-        }
-
+    
         // Find therapists matching the query
         const profiles = await TherapistProfileModel.find(query)
             .populate({

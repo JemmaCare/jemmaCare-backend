@@ -4,7 +4,7 @@ import { countryNames } from "../models/patient_model.js";
 
 
 export const patientResponseValidator = Joi.object({
-    therapyType: Joi.string().valid("Bipolar", "Depression", "Psychosis", "Personality disorders", "Schizophrenia", "Body Dysmorphic Disorder", "Obsessive Compulsive Disorder", "Postpartum Depression").required(),
+    therapyType: Joi.string().valid("Bipolar", "Depression", "Psychosis", "Personality disorders", "Anxiety","Schizophrenia", "Body Dysmorphic Disorder", "Obsessive Compulsive Disorder", "Postpartum Depression").required(),
     age: Joi.number().required(),
     nationality: Joi.string().valid(...countryNames).required(),
     phone: Joi.string(),

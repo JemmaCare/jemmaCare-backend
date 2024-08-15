@@ -8,6 +8,7 @@ export const therapistProfileValidator = Joi.object({
             "Bipolar",
             "Depression",
             "Psychosis",
+            "Anxiety",
             "Personality disorders",
             "Schizophrenia",
             "Body Dysmorphic Disorder",

@@ -5,7 +5,6 @@ import { appointmentUpdateValidator } from "../validators/appointment_validator.
 import { mailTransport } from "../config/mail.js";
 
 
-// Create Appointment
 export const createAppointment = async (req, res) => {
     try {
         // Validate the request body
@@ -23,30 +22,32 @@ export const createAppointment = async (req, res) => {
         }
 
         // Create a new appointment using the validated data
-        const appointment = await AppointmentModel.create({
+        const newAppointment = await AppointmentModel.create({
             userId: req.user.id,
             ...value
         });
 
-
-
+        // Populate the newly created appointment with therapist details
+        const populatedAppointment = await AppointmentModel.findById(newAppointment.id)
+            .populate('userId', 'firstName lastName')  // Populate patient name
+            .populate('therapistId', 'firstName lastName email');  // Populate therapist name and email
 
         // Send confirmation email to the patient
         await mailTransport.sendMail({
             to: patient.email,
             subject: "Appointment Confirmation",
-            text: `Dear ${patient.firstName} ${patient.lastName},\n\nYour appointment with ${therapist.firstName} ${therapist.lastName} has been confirmed for ${appointment.appointmentDate} at ${appointment.appointmentTime}.\n\nType of Therapy: ${appointment.therapyType}\nCommunication Method: ${appointment.communicationMethod}\n\nThank you!`
+            text: `Dear ${patient.firstName} ${patient.lastName},\n\nYour appointment with ${therapist.firstName} ${therapist.lastName} has been confirmed for ${populatedAppointment.appointmentDateTime}.\n\nCommunication Method: ${populatedAppointment.communicationMethod}\n\nThank you!`
         });
 
         // Send notification email to the therapist
         await mailTransport.sendMail({
             to: therapist.email,
             subject: "New Appointment Scheduled",
-            text: `Dear ${therapist.firstName} ${therapist.lastName},\n\nYou have a new appointment with ${patient.firstName} ${patient.lastName} scheduled for ${appointment.appointmentDate} at ${appointment.appointmentTime}.\n\nType of Therapy: ${appointment.therapyType}\nCommunication Method: ${appointment.communicationMethod}\n\nPlease be prepared.\n\nThank you!`
+            text: `Dear ${therapist.firstName} ${therapist.lastName},\n\nYou have a new appointment with ${patient.firstName} ${patient.lastName} scheduled for ${populatedAppointment.appointmentDateTime}.\n\nCommunication Method: ${populatedAppointment.communicationMethod}\n\nPlease be prepared.\n\nThank you!`
         });
 
-        // Send the created appointment as the response
-        res.status(201).json(appointment);
+        // Send the populated appointment as the response
+        res.status(201).json(populatedAppointment);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
