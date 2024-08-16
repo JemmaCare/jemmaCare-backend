@@ -9,20 +9,12 @@ export const countryNames = getNames();
 const patientResponseSchema = new Schema({
 
     therapyType: { type: String, enum: ["Bipolar", "Depression", "Psychosis", "Personality disorders", "Anxiety","Schizophrenia", "Body Dysmorphic Disorder", "Obsessive Compulsive Disorder", "Postpartum Depression"], required: true },
-    age: { 
-        type: [Number], 
-        required: true, 
-        validate: {
-            validator: v => v.length === 2 && v[0] < v[1],
-            message: props => `Age range should consist of two numbers where the first number is less than the second`
-        } 
-    },
+    age: {type: Number},
     nationality: { type: String, enum: countryNames, required: true },
     phone: { type: String },
     address: { type: String },
     gender: { type: String, enum: ["male", "female"] },
     previousTherapy: { type: Boolean, required: true },
-    reason: { type: String, required: true },
     feelings: { type: String, required: true },
     userId: { type: Types.ObjectId, ref: 'User', select: true }
 
