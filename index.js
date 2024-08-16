@@ -3,6 +3,7 @@ import { dbConnection } from "./config/db.js";
 import { userRouter } from "./routes/user_routes.js";
 import errorHandler from "errorhandler";
 import cors from "cors";
+import { restartServer } from "./restart_server.js";
 import expressOasGenerator from "@mickeymond/express-oas-generator";
 import mongoose from "mongoose";
 import { articleRouter } from "./routes/article_routes.js";
@@ -62,13 +63,24 @@ expressOasGenerator.handleRequests();
 app.use((req, res) => res.redirect('/api-docs/'));
 
 
+app.get("/api/v1/health", (req, res) => {
+    res.json({ status: "UP" });
+  });
 
-// connect to database
-dbConnection();
 
+  const reboot = async () => {
+    setInterval(restartServer, process.env.INTERVAL)
+    }
 
-// connect server
-const port = 3000
-app.listen(port, () => {
-    console.log(`App is connected to port ${port}`)
-});
+    const PORT = process.env.PORT || 3000;
+dbConnection()
+  .then(() => {
+    app.listen(PORT, () => {
+      reboot();  // Remove .then() as reboot() is not a promise
+      console.log(`Server is connected to Port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+    process.exit(-1);
+  });
