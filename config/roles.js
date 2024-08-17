@@ -11,8 +11,8 @@ export const roles = [
             'read_users',
             'update_profile',
             'delete_profile',
-            'get_patientResponse',
-            'get_therapistProfile'
+            'get_patientresponse',
+            'get_therapistprofile'
         ]
     },
 
@@ -20,10 +20,10 @@ export const roles = [
         role: 'patient',
         permissions: [
             'read_articles',
-            'get_therapistProfile',
-            'create_patientResponse',
-            'update_patientResponse',
-            'delete_patientResponse',
+            'get_therapistprofile',
+            'create_patientresponse',
+            'update_patientresponse',
+            'delete_patientresponse',
             'create_appointment',
             'update_appointment',
             'delete_appointment',
@@ -36,10 +36,10 @@ export const roles = [
             'upload_article',
             'read_articles',
             'delete_article',
-            'get_patientResponses',
-            'create_therapistProfile',
-            'update_therapistProfile',
-            'delete_therapistProfile',
+            'get_patientresponses',
+            'create_therapistprofile',
+            'update_therapistprofile',
+            'delete_therapistprofile',
             'get_appointments',
         ]
     }
