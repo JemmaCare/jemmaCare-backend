@@ -17,7 +17,7 @@ export const therapistProfileValidator = Joi.object({
         )
     ).min(1).required(),
     overview: Joi.string().min(20).max(300).required(),
-    nationality: Joi.string().valid(...countryNames).required(),
+    nationality: Joi.string().valid("Ghana", "Nigeria", "Zimbabwe",  "Uganda").required(),
     phone: Joi.string(),
     address: Joi.string(),
     gender: Joi.string().valid('male', 'female'),
@@ -42,7 +42,7 @@ export const therapistUpdateProfileValidator = Joi.object({
         )
     ).min(1).optional(),
     overview: Joi.string().min(20).max(300).optional(),
-    nationality: Joi.string().valid("Ghana", "Nigeria", "Zimbabwe",  "Uganda").required(),
+    nationality: Joi.string().valid("Ghana", "Nigeria", "Zimbabwe",  "Uganda").optional(),
     phone: Joi.string(),
     address: Joi.string(),
     gender: Joi.string().valid('male', 'female'),

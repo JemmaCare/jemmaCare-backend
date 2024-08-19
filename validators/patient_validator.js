@@ -19,7 +19,7 @@ export const patientResponseValidator = Joi.object({
 export const patientUpdateResponseValidator = Joi.object({
     therapyType: Joi.string().valid("Bipolar", "Depression", "Psychosis", "Personality disorders", "Schizophrenia", "Body Dysmorphic Disorder", "Obsessive Compulsive Disorder", "Postpartum Depression").required(),
     age: Joi.number()  ,
-    nationality: Joi.string().valid(...countryNames).optional(),
+    nationality: Joi.string().valid("Ghana", "Nigeria", "Zimbabwe",  "Uganda").optional(),
     phone: Joi.string(),
     address: Joi.string(),
     gender: Joi.string().valid('male', 'female'),
