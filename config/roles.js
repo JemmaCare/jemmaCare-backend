@@ -11,8 +11,8 @@ export const roles = [
             'read_users',
             'update_profile',
             'delete_profile',
-            'get_patientresponse',
-            'get_therapistprofile'
+            'get_patientresponses',
+            'get_therapistprofiles'
         ]
     },
 
@@ -20,7 +20,7 @@ export const roles = [
         role: 'patient',
         permissions: [
             'read_articles',
-            'get_therapistprofile',
+            'get_therapistprofiles',
             'create_patientresponse',
             'update_patientresponse',
             'delete_patientresponse',

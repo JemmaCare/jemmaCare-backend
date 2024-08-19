@@ -7,12 +7,12 @@ export const therapistProfileRouter = Router();
 
 therapistProfileRouter.post('/users/therapistprofiles/login', loginTherapist);
 
-therapistProfileRouter.post('/users/therapistprofiles', isAuthenticated, hasPermission('create_therapistProfile'), remoteUpload.single('profilePicture'), createProfile);
+therapistProfileRouter.post('/users/therapistprofiles', isAuthenticated, hasPermission('create_therapistprofile'), remoteUpload.single('profilePicture'), createProfile);
 
-therapistProfileRouter.get('/users/therapistprofiles', isAuthenticated, hasPermission('get_therapistProfile'), getProfiles);
+therapistProfileRouter.get('/users/therapistprofiles', isAuthenticated, hasPermission('get_therapistprofiles'), getProfiles);
 
 therapistProfileRouter.get('/users/therapistprofiles/:id', getProfileById);
 
-therapistProfileRouter.patch('/users/therapistprofiles/:id', isAuthenticated, hasPermission('update_therapistProfile'), updateProfile);
+therapistProfileRouter.patch('/users/therapistprofiles/:id', isAuthenticated, hasPermission('update_therapistprofile'), updateProfile);
 
-therapistProfileRouter.delete('/users/therapistprofiles/:id', isAuthenticated, hasPermission('delete_therapistProfile'), deleteProfile);
+therapistProfileRouter.delete('/users/therapistprofiles/:id', isAuthenticated, hasPermission('delete_therapistprofile'), deleteProfile);
