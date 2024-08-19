@@ -5,13 +5,13 @@ import { createResponse, deleteResponse, getResponseById, getResponses, updateRe
 
 export const patientResponseRouter = Router();
 
-patientResponseRouter.post('/users/patientresponses', isAuthenticated, hasPermission('create_patientResponse'), createResponse);
+patientResponseRouter.post('/users/patientresponses', isAuthenticated, hasPermission('create_patientresponse'), createResponse);
 
-patientResponseRouter.get('/users/patientresponses', isAuthenticated, hasPermission('get_patientResponses'), getResponses);
+patientResponseRouter.get('/users/patientresponses', isAuthenticated, hasPermission('get_patientresponses'), getResponses);
 
 patientResponseRouter.get('/users/patientresponses/:id', getResponseById);
 
-patientResponseRouter.patch('/users/patientresponses/:id', isAuthenticated, hasPermission('update_patientResponse'), updateResponse);
+patientResponseRouter.patch('/users/patientresponses/:id', isAuthenticated, hasPermission('update_patientresponse'), updateResponse);
 
-patientResponseRouter.delete('/users/patientresponses/:id', isAuthenticated, hasPermission('delete_patientResponse'), deleteResponse);
+patientResponseRouter.delete('/users/patientresponses/:id', isAuthenticated, hasPermission('delete_patientresponse'), deleteResponse);
 
