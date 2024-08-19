@@ -1,17 +1,15 @@
 import { Schema, model, Types } from "mongoose";
 import { toJSON } from "@reis/mongoose-to-json";
-import { getNames } from "country-list";
 
 
 
-export const countryNames = getNames();
 
 
 const therapistProfileSchema = new Schema({
     profilePicture: { type: String },
     expertise: { type: [String], enum: ["Bipolar", "Depression", "Psychosis","Anxiety", "Personality disorders", "Schizophrenia", "Body Dysmorphic Disorder", "Obsessive Compulsive Disorder", "Postpartum Depression"], required: true },
     overview: { type: String, required: true },
-    nationality: { type: String, enum: countryNames, required: true },
+    nationality:  { type: String, enum: ["Ghana", "Nigeria", "Zimbabwe",  "Uganda"], required: true },
     phone: { type: String },
     address: { type: String },
     gender: { type: String, enum: ["male", "female"] },

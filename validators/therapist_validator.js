@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { countryNames } from "../models/therapist_model.js";
+
 
 export const therapistProfileValidator = Joi.object({
     profilePicture: Joi.string(),
@@ -42,7 +42,7 @@ export const therapistUpdateProfileValidator = Joi.object({
         )
     ).min(1).optional(),
     overview: Joi.string().min(20).max(300).optional(),
-    nationality: Joi.string().valid(...countryNames).optional(),
+    nationality: Joi.string().valid("Ghana", "Nigeria", "Zimbabwe",  "Uganda").required(),
     phone: Joi.string(),
     address: Joi.string(),
     gender: Joi.string().valid('male', 'female'),
